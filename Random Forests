@@ -1,0 +1,179 @@
+######################
+### Random Forests ###
+######################
+
+
+from sklearn.ensemble import RandomForestClassifier
+
+forest1 = RandomForestClassifier(n_estimators = 110,
+                                max_depth = 10,
+                                max_features = 4,
+                                random_state = 42)
+
+y_rf1 = df1['Class']
+X_rf1 = df1.drop('Class', axis=1).values
+
+X5_train, X5_test, y5_train, y5_test = train_test_split(X_rf1, y_rf1, test_size = 0.3, random_state = 21)
+
+forest1.fit(X5_train, y5_train)
+
+y5_pred = forest1.predict(X5_test)
+
+list_pred_5 = []
+
+for a in y5_pred:
+    if a < 0.5:
+        list_pred_5.append(0)
+    else:
+        list_pred_5.append(1)
+        
+cm7 = confusion_matrix(y5_test, list_pred_5)
+print(cm7)
+#[[85291     3]
+# [   43   106]] - besser als zuvor
+scores(cm7)
+
+# Feature importances
+imp = forest1.feature_importances_
+print(imp)
+
+importances = pd.DataFrame(vars_list)
+importances["Vars"] = importances[0]
+importances = importances.drop(0, axis = 1)
+importances["Wichtigkeit"] = imp 
+print(importances)
+
+
+## sotzing by importance
+sort = np.argsort(imp)[::-1]
+x = range(len(imp))
+labels = np.array(vars_list)
+plt.bar(x, imp, tick_label = labels)
+plt.xticks(rotation = 90)
+plt.show()
+
+plt.savefig("imp1")
+
+# wichtige Variablen:V4, V7, V9, V10, V11, V12
+# V14, V16, V17, V18, V21, V26, V27
+
+df2 = df1[["V4", "V7", "V9", "V10", "V11", "V12", "V14", "V16", "V17", "V18", "V21", "V26", "V27"]]
+# alternativ: 
+df2 = df1[["Time", "V3", "V4", "V7","V9","V10","V11","V12","V14","V16","V17","V18", "V21","V26","V27"]]
+
+## hier wissen wir jetzt, welche features am 
+# wichtigsten sind!!
+
+# noch einmal den RFC anwenden
+
+forest1 = RandomForestClassifier(n_estimators = 100,
+                                max_depth = 8,
+                                max_features = 4,
+                                random_state = 42)
+
+y_rf2 = df1['Class']
+X_rf2 = df2
+
+X6_train, X6_test, y6_train, y6_test = train_test_split(X_rf2, y_rf2, test_size = 0.3, random_state = 21)
+
+forest1.fit(X6_train, y6_train)
+
+y6_pred = forest1.predict(X6_test)
+
+list_pred_6 = []
+
+for a in y6_pred:
+    if a < 0.5:
+        list_pred_6.append(0)
+    else:
+        list_pred_6.append(1)
+        
+y6_pred = forest1.predict(X6_test)
+
+cm8 = confusion_matrix(y6_test, list_pred_6)
+print(cm8)
+#[[85289     5]
+#[   40   109]] - nicht wirklich besser als zuvor
+scores(cm8)
+
+#saving the model
+import pickle
+#filename = r'C:\Users\Nico\Documents\TechLabs.f1'
+#pickle.dump(forest1, open(filename, 'wb'))
+
+###  Mit den transformierten Daten ###
+
+forest2 = RandomForestClassifier(n_estimators = 100,
+                                max_depth = 8,
+                                max_features = 4,
+                                random_state = 42)
+
+df_not_class_scaled = pd.DataFrame(df_not_class_scaled)
+
+y_rf2 = df1['Class']
+X_rf2 = df_not_class_scaled
+
+X7_train, X7_test, y7_train, y7_test = train_test_split(X_rf2, y_rf2, test_size = 0.3, random_state = 21)
+
+forest2.fit(X7_train, y7_train)
+
+y7_pred = forest2.predict(X7_test)
+
+list_pred_7 = []
+
+for a in y7_pred:
+    if a < 0.5:
+        list_pred_7.append(0)
+    else:
+        list_pred_7.append(1)
+        
+cm9 = confusion_matrix(y7_test, list_pred_7)
+print(cm9)
+#  nicht  besser 
+scores(cm9)
+
+#saving the model
+import pickle
+#filename = r'C:\Users\Nico\Documents\TechLabs.f2'
+#pickle.dump(forest2, open(filename, 'wb'))
+
+### andere Parameterwerte ####
+
+forest3 = RandomForestClassifier(n_estimators = 170,
+                                max_depth = 14,
+                                max_features = 4,
+                                random_state = 42)
+
+df_not_class_scaled = pd.DataFrame(df_not_class_scaled)
+
+y_rf3 = df1['Class']
+X_rf3 = df_not_class_scaled
+
+X8_train, X8_test, y8_train, y8_test = train_test_split(X_rf3, y_rf3, test_size = 0.3, random_state = 21)
+
+forest3.fit(X8_train, y8_train)
+
+y8_pred = forest3.predict(X8_test)
+
+list_pred_8 = []
+
+for a in y8_pred:
+    if a < 0.5:
+        list_pred_8.append(0)
+    else:
+        list_pred_8.append(1)
+        
+y8_pred = forest3.predict(X8_test)
+
+cm8 = confusion_matrix(y8_test, list_pred_8)
+print(cm8)
+# nicht gut!
+scores(cm8)
+
+#forest3.save(r'C:\Users\Nico\Documents\TechLabs.f3')
+
+#saving the model
+import pickle
+#filename = r'C:\Users\Nico\Documents\TechLabs.f3'
+#pickle.dump(forest3, open(filename, 'wb'))
+ 
