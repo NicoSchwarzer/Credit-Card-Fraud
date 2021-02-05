@@ -1,0 +1,118 @@
+#############################
+## Support vector machines ##
+#############################
+
+import pandas as pd
+import numpy as np
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC 
+
+
+y_svm1 = df1['Class']
+X_svm1 = df1.drop('Class', axis=1).values
+
+X13_train, X13_test, y13_train, y13_test = train_test_split(X_svm1, y_svm1, test_size = 0.4, random_state = 21)
+
+## C of 1
+
+model_svm1 = SVC(kernel = 'linear' , C=1)
+model1_svm.fit(X13_train, y13_train)
+
+
+
+# besser, da binär:
+y13_pred = model1.predict(X13_test)
+
+list_pred_13 = []
+
+for a in y13_pred:
+    if a < 0.5:
+        list_pred_13.append(0)
+    else:
+        list_pred_13.append(1)
+
+cm10 = confusion_matrix(y13_pred, list_pred_13)
+print(cm10)
+#[[113839      0]
+ #[     0     84]]
+
+scores(cm10)
+# alles 1.0!
+
+##### PEERFEKT!! Eine lineare SVM scheint also sehr gut zu passen!
+
+from sklearn.externals import joblib
+#filename = r'C:\Users\Nico\Documents\TechLabs.f3_1'
+#joblib.dump(model_svm1, filename)
+
+## einmal noch nur mit dem reduziertem Datensatz
+df2 = df1[["Time", "V3", "V4", "V7","V9","V10","V11","V12","V14","V16","V17","V18", "V21","V26","V27"]]
+
+y_svm2 = df1['Class']
+X_svm2 = df2
+
+
+X14_train, X14_test, y14_train, y14_test = train_test_split(X_svm2, y_svm2, test_size = 0.4, random_state = 21)
+
+
+model_svm2 = SVC(kernel = 'linear' , C=1)
+model_svm2.fit(X14_train, y14_train)
+
+
+# besser, da binär:
+y14_pred = model_svm2.predict(X14_test)
+
+list_pred_14 = []
+
+for a in y14_pred:
+    if a < 0.5:
+        list_pred_14.append(0)
+    else:
+        list_pred_14.append(1)
+
+cm11 = confusion_matrix(y14_pred, list_pred_14)
+print(cm11)
+#[[113839      0]
+ #[     0     84]]
+
+scores(cm11)
+# alles 1 :D
+
+from sklearn.externals import joblib
+#filename = r'C:\Users\Nico\Documents\TechLabs.f3_2'
+#joblib.dump(model_svm2, filename)
+
+
+## noch einmal mit dem standardisiertem Datensatz
+
+y_svm3 = df1['Class']
+X_svm3 = df_not_class_scaled
+
+X15_train, X15_test, y15_train, y15_test = train_test_split(X_svm3, y_svm3, test_size = 0.4, random_state = 21)
+
+model_svm3 = SVC(kernel = 'linear' , C=1)
+model_svm3.fit(X15_train, y15_train)
+
+# besser, da binär:
+y15_pred = model_svm3.predict(X15_test)
+
+list_pred_15 = []
+
+for a in y15_pred:
+    if a < 0.5:
+        list_pred_15.append(0)
+    else:
+        list_pred_15.append(1)
+
+cm12 = confusion_matrix(y15_pred, list_pred_15)
+print(cm12)
+#[[113752      0]
+# [     0    171]]
+# wie geil :D
+scores(cm12)
+# alles 1
+
+from sklearn.externals import joblib
+#filename = r'C:\Users\Nico\Documents\TechLabs.f3_3'
+#joblib.dump(model_svm3, filename)
